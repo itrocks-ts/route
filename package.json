@@ -1,0 +1,56 @@
+{
+	"author": {
+		"name": "Baptiste Pillot",
+		"email": "baptiste@pillot.fr"
+	},
+	"dependencies": {
+		"@itrocks/app-dir": "latest",
+		"@itrocks/class-type": "latest",
+		"@itrocks/decorator": "latest"
+	},
+	"description": "",
+	"devDependencies": {
+		"@types/node": "^22.10",
+		"typescript": "~5.6"
+	},
+	"engines": {
+		"node": ">=18"
+	},
+	"exports": {
+		".": {
+			"import": "./esm/route.js",
+			"require": "./cjs/route.js",
+			"types": "./esm/route.d.ts"
+		},
+		"./uses-interface-plugin": {
+			"import": "./esm/static-routes-plugin.js",
+			"require": "./cjs/static-routes-plugin.js",
+			"types": "./esm/static-routes-plugin.d.ts"
+		}
+	},
+	"files": [
+		"LICENSE",
+		"README.md",
+		"*/*.d.ts",
+		"*/*.js",
+		"!*/esm.*"
+	],
+	"homepage": "https://it.rocks",
+	"keywords": [
+		"backend",
+		"it.rocks",
+		"route"
+	],
+	"license": "LGPL-3.0-or-later",
+	"name": "@itrocks/route",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/itrocks-ts/route.git"
+	},
+	"scripts": {
+		"build": "npm run build:cjs && npm run build:esm",
+		"build:cjs": "tsc -p tsconfig.cjs.json",
+		"build:esm": "tsc -p tsconfig.esm.json && node esm/esm"
+	},
+	"version": "0.0.1"
+}
