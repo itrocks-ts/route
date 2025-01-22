@@ -22,7 +22,7 @@
 			"require": "./cjs/route.js",
 			"types": "./esm/route.d.ts"
 		},
-		"./uses-interface-plugin": {
+		"./static-routes-plugin": {
 			"import": "./esm/static-routes-plugin.js",
 			"require": "./cjs/static-routes-plugin.js",
 			"types": "./esm/static-routes-plugin.d.ts"
@@ -52,5 +52,5 @@
 		"build:cjs": "tsc -p tsconfig.cjs.json",
 		"build:esm": "tsc -p tsconfig.esm.json && node esm/esm"
 	},
-	"version": "0.0.1"
+	"version": "0.0.2"
 }
