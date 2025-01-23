@@ -1,3 +1,4 @@
+import appDir                  from '@itrocks/app-dir'
 import { baseType, isAnyType } from '@itrocks/class-type'
 import { access, readdir }     from 'fs/promises'
 import { normalize, sep }      from 'path'
@@ -9,7 +10,7 @@ const routes: Routes = {}
 
 export async function accessModule(path: string)
 {
-	try { await access('./app' + path + '.js') }
+	try { await access(appDir + '/app' + path + '.js') }
 	catch { return }
 	return path
 }
@@ -78,7 +79,7 @@ export function getRoute(ofModule: string)
 
 export function initRoutes()
 {
-	readDirRecursive(__dirname.slice(0, __dirname.lastIndexOf(sep))).then(entries => {
+	readDirRecursive(appDir + '/app').then(entries => {
 		for (let entry of entries) {
 			if (!entry.endsWith('.js') || entry.endsWith('.test.js')) continue
 			entry = entry.slice(0, -3)

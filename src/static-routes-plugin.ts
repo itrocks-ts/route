@@ -1,12 +1,11 @@
 import appDir            from '@itrocks/app-dir'
 import { readFileSync }  from 'fs'
 import { writeFileSync } from 'fs'
-import { normalize }     from 'path'
 import ts                from 'typescript'
 
 // TODO support aliasing: import { Route as Alias } from './route' ; @Alias('/')
 
-const staticRoutesFile = appDir + '/var/static-routes.json'
+const staticRoutesFile = appDir + '/static-routes.json'
 
 let source: string
 try   { source = readFileSync(staticRoutesFile) + '' }
@@ -18,27 +17,23 @@ for (const [path, module] of Object.entries(routes)) {
 	(modules[module] ?? (modules[module] = [])).push(path)
 }
 
-const saveStaticRoutes = () => writeFileSync(staticRoutesFile, JSON.stringify(routes, null, '\t') + '\n')
+function saveStaticRoutes()
+{
+	return writeFileSync(staticRoutesFile, JSON.stringify(routes, null, '\t') + '\n')
+}
 
 export default () => (context: ts.TransformationContext) => (sourceFile: ts.SourceFile) =>
 {
 	let   hasRoute = false
+	const module   = sourceFile.fileName.slice(appDir.length, -3)
 	const validRoutes: Record<string, string> = {}
-
-	const rootLength = normalize(__dirname + '/..').length
-	const module     = sourceFile.fileName.slice(rootLength, -3)
 
 	function isRoute(node: ts.Node): boolean
 	{
 		if (!ts.isImportDeclaration(node)) return false
 		if (!node.importClause) return false
 		const moduleSpecifier = node.moduleSpecifier as ts.StringLiteral
-		if (!moduleSpecifier.text.endsWith('/route')) return false
-
-		const fileName   = sourceFile.fileName
-		const filePath   = fileName.slice(0, fileName.lastIndexOf('/'))
-		const modulePath = normalize(filePath + '/' + moduleSpecifier.text)
-		if (modulePath !== __dirname + '/route') return false
+		if (moduleSpecifier.text !== '@itrocks/route') return false
 
 		if (node.importClause.name?.getText() === 'Route') {
 			return true
