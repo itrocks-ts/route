@@ -5,6 +5,7 @@ import ts                from 'typescript'
 
 // TODO support aliasing: import { Route as Alias } from './route' ; @Alias('/')
 
+const scanPath         = appDir + '/app'
 const staticRoutesFile = appDir + '/static-routes.json'
 
 let source: string
@@ -25,7 +26,7 @@ function saveStaticRoutes()
 export default () => (context: ts.TransformationContext) => (sourceFile: ts.SourceFile) =>
 {
 	let   hasRoute = false
-	const module   = sourceFile.fileName.slice(appDir.length, -3)
+	const module   = sourceFile.fileName.slice(scanPath.length, -3)
 	const validRoutes: Record<string, string> = {}
 
 	function isRoute(node: ts.Node): boolean
