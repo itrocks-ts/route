@@ -1,143 +1,87 @@
-import appDir                  from '@itrocks/app-dir'
-import { baseType, isAnyType } from '@itrocks/class-type'
-import { access, readdir }     from 'fs/promises'
-import { normalize, sep }      from 'path'
-import { Route }               from './route'
+import { Type }               from '@itrocks/class-type'
+import { sep }                from 'path'
+import { Destination }        from './destination'
+import { isDestination }      from './destination'
+import { resolveDestination } from './destination'
 
-type Routes = { [name: string]: Routes | string }
+export type RouteTree = { [name: string]: Destination | RouteTree }
 
-const routes: Routes = {}
-
-export async function accessModule(path: string)
+export class Routes
 {
-	try { await access(appDir + '/app' + path + '.js') }
-	catch { return }
-	return path
-}
+	routes: RouteTree = {}
 
-function addRoute(routePath: string, moduleFile: string)
-{
-	let   route  = routes
-	const names  = routePath.split(sep).slice(1).reverse()
-	const length = names.length - 1
-	for (let index = 0; index < length; index ++) {
-		const name      = names[index]
-		let   routeStep = route[name]
-		if (!routeStep) {
-			routeStep = {}
-		}
-		if (typeof routeStep === 'string') {
-			routeStep = { ':': routeStep }
-		}
-		route = route[name] = routeStep
-	}
-	const name = names[names.length - 1]
-	route[name]
-		? Object.assign(route[name], { ':': moduleFile })
-		: (route[name] = moduleFile)
-}
-
-export async function getActionModule(ofRoute: string, action: string)
-{
-	const module = getModule(ofRoute)
-	return await accessModule(module + '/' + action)
-		|| await accessModule('/action/builtIn/' + action + '/' + action)
-		|| ''
-}
-
-export function getModule(ofRoute: string)
-{
-	let route: Routes | string = routes
-	for (const name of ofRoute.slice(1).split('/').reverse()) {
-		if (typeof route === 'string') return route
-		const routeStep: Routes | string | undefined = route[name]
-		if (!routeStep) break
-		route = routeStep
-	}
-	if ((typeof route === 'object') && route[':']) {
-		route = route[':']
-	}
-	return (route === routes) ? undefined : route
-}
-
-export function getRoute(ofModule: string)
-{
-	const getRoute = ['']
-	let route: Routes | string = routes
-	for (const name of ofModule.slice((ofModule[1] === ':') ? 3 : 1).split(sep).reverse()) {
-		if (typeof route === 'string') return getRoute.join('/')
-		const routeStep: Routes | string | undefined = route[name]
-		if (!routeStep) break
-		getRoute.push(name)
-		route = routeStep
-	}
-	if ((typeof route === 'object') && route[':']) {
-		route = route[':']
-	}
-	return (typeof route === 'string') ? getRoute.join('/') : undefined
-}
-
-export function initRoutes()
-{
-	readDirRecursive(appDir + '/app').then(entries => {
-		for (let entry of entries) {
-			if (!entry.endsWith('.js') || entry.endsWith('.test.js')) continue
-			entry = entry.slice(0, -3)
-			addRoute(entry, entry)
-		}
-		const simplify = (routes: Routes, name: string, route: Routes | string) => {
-			if (typeof route === 'string') {
-				return
-			}
-			for (const [name, subRoutes] of Object.entries(route)) simplify(route, name, subRoutes)
-			const values = Object.values(route)
-			if (values.length === 1) {
-				routes[name] = values[0]
-				return
-			}
-		}
-		for (const [name, route] of Object.entries(routes)) simplify(routes, name, route)
-	})
-
-	const Module = require('module')
-	const superRequire: (...args: any) => typeof Module = Module.prototype.require
-
-	Module.prototype.require = function(file: string)
+	add(path: string, destination: Destination)
 	{
-		const module = superRequire.call(this, ...arguments)
-		const type   = module?.default
-		if (!type || !isAnyType(type)) return module
-
-		if (file[0] === '.') {
-			file = this.path + ((this.path[this.path.length - 1] === '/') ? '' : '/') + file
+		let   route  = this.routes
+		const names  = path.split(sep).slice(1).reverse()
+		const length = names.length - 1
+		for (let index = 0; index < length; index ++) {
+			const name = names[index]
+			let   step = route[name]
+			if (!step) {
+				step = {}
+			}
+			if (isDestination(step)) {
+				step = { '.': step }
+			}
+			route = route[name] = step
 		}
-		file = normalize(require.resolve(file))
-		if (file[0] !== '/') return module
-
-		const realType = baseType(type)
-		const route    = getRoute(file.slice(0, -3))
-		if (!route) return module
-
-		Route(route)(realType)
-
-		return module
+		const name = names[length]
+		if (route[name]) {
+			Object.assign(route[name], { '.': destination })
+		}
+		else {
+			route[name] = destination
+		}
 	}
-}
 
-async function readDirRecursive(directoryName: string)
-{
-	return walk(directoryName).then(entries => entries.map(entry => entry.slice(directoryName.length)))
-}
+	destination(route: string): Destination | undefined
+	{
+		let position: Destination | RouteTree = this.routes
+		for (const name of route.slice(1).split('/').reverse()) {
+			if (isDestination(position)) {
+				return position
+			}
+			const step: Destination | RouteTree | undefined = position[name]
+			if (step) {
+				position = step
+			}
+		}
+		if ((typeof position === 'object') && position['.']) {
+			position = position['.']
+		}
+		return isDestination(position)
+			? position
+			: undefined
+	}
 
-async function walk(directoryName: string): Promise<string[]>
-{
-	// @ts-ignore flat(Infinity) always returns string[]
-	return Promise.all(
-		await readdir(directoryName, { withFileTypes: true }).then(entries =>
-			entries.map(entry => {
-				const child = directoryName + sep + entry.name
-				return entry.isDirectory() ? walk(child) : child
-			})
-		)
-	).then(entries => entries.flat(Infinity))
+	resolve(route: string): Function | Type | undefined
+	{
+		const destination = this.destination(route)
+		if (!destination) {
+			return undefined
+		}
+		return resolveDestination(destination)
+	}
+
+	simplify()
+	{
+		function simplifyStep(step: Destination | RouteTree, parentStep: RouteTree, parentName: string)
+		{
+			if (isDestination(step)) {
+				return
+			}
+			for (const [name, nextStep] of Object.entries(step)) {
+				simplifyStep(nextStep, step, name)
+			}
+			const steps = Object.values(step)
+			if (steps.length === 1) {
+				parentStep[parentName] = steps[0]
+			}
+		}
+		for (const [name, step] of Object.entries(this.routes)) {
+			simplifyStep(step, this.routes, name)
+		}
+	}
+
 }

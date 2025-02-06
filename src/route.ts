@@ -1,32 +1,33 @@
-import { ObjectOrType }          from '@itrocks/class-type'
-import { decorate, decoratorOf } from '@itrocks/decorator/class'
-
-const ROUTE = Symbol('route')
-
-export function objectRouteOf(target: object)
-{
-	return routeOf(target) + (('id' in target) ? ('/' + target.id) : '')
-}
-
-export default Route
-export function Route(route: string)
-{
-	return decorate(ROUTE, route)
-}
-
-export function routeOf(target: ObjectOrType)
-{
-	return decoratorOf(target, ROUTE, '')
-}
+import appDir         from '@itrocks/app-dir'
+import { jsonRoutes } from './json'
+import { Routes }     from './routes'
 
 export {
-	accessModule,
-	getActionModule,
-	getModule,
-	getRoute,
-	initRoutes
+	Route,
+	routeOf
+} from './decorator'
+
+export {
+	Destination,
+	isDestination,
+	resolveDestination
+} from './destination'
+
+export {
+	jsonRoutes
+} from './json'
+
+export {
+	RouteTree,
+	Routes
 } from './routes'
 
-export {
-	staticRoutes
-} from './static-routes'
+export async function loadRoutes(path = appDir, fileName = 'routes.json', recursive = true)
+{
+	const routes = new Routes()
+	for (const [route, destination] of Object.entries(await jsonRoutes(path, fileName, recursive))) {
+		routes.add(route, destination)
+	}
+	routes.simplify()
+	return routes
+}

@@ -5,7 +5,7 @@ import ts                from 'typescript'
 
 // TODO support aliasing: import { Route as Alias } from './route' ; @Alias('/')
 
-const scanPath         = appDir + '/app'
+const scanPath         = appDir
 const staticRoutesFile = appDir + '/static-routes.json'
 
 let source: string
