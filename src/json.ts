@@ -19,7 +19,7 @@ export async function jsonRoutes(path = appDir, fileName = 'routes.json', recurs
 			for (const [route, module] of Object.entries(JSON.parse((await readFile(join(path, fileName))).toString()))) {
 				if (!isDestination(module)) continue
 				routes[route] = (module[0] === '.')
-					? normalize(join(path, module))
+					? normalize(join(path, module)).slice(appDir.length)
 					: module
 			}
 		}
