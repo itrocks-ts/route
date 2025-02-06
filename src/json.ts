@@ -12,7 +12,7 @@ export async function jsonRoutes(path = appDir, fileName = 'routes.json', recurs
 		const filePath = join(path, entry.name)
 		if (entry.isDirectory()) {
 			if (recursive) {
-				Object.assign(routes, jsonRoutes(filePath, fileName))
+				Object.assign(routes, await jsonRoutes(filePath, fileName))
 			}
 		}
 		else if (entry.isFile() && (entry.name === fileName)) {
