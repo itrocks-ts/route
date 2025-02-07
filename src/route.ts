@@ -4,7 +4,8 @@ import { Routes }     from './routes'
 
 export {
 	Route,
-	routeOf
+	routeOf,
+	routeOfDependsOn as routeDependsOn
 } from './decorator'
 
 export {
