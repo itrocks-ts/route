@@ -84,4 +84,24 @@ export class Routes
 		}
 	}
 
+	summarize(route: string)
+	{
+		let position: Destination | RouteTree = this.routes
+		let summary = ''
+		for (const name of route.slice(1).split('/').reverse()) {
+			if (isDestination(position)) {
+				return summary
+			}
+			const step: Destination | RouteTree | undefined = position[name]
+			if (step) {
+				summary += '/' + name
+				position = step
+			}
+		}
+		if ((typeof position === 'object') && position['.']) {
+			position = position['.']
+		}
+		return summary
+	}
+
 }
