@@ -1,4 +1,4 @@
-import appDir            from '@itrocks/app-dir'
+import { appDir }        from '@itrocks/app-dir'
 import { readFileSync }  from 'fs'
 import { writeFileSync } from 'fs'
 import ts                from 'typescript'

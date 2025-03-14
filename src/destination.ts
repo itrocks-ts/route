@@ -1,5 +1,5 @@
-import appDir   from '@itrocks/app-dir'
-import { Type } from '@itrocks/class-type'
+import { appDir } from '@itrocks/app-dir'
+import { Type }   from '@itrocks/class-type'
 
 export type Destination = string
 

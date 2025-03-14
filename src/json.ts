@@ -1,4 +1,4 @@
-import appDir                from '@itrocks/app-dir'
+import { appDir }            from '@itrocks/app-dir'
 import { readdir, readFile } from 'fs/promises'
 import { join, normalize }   from 'path'
 import { isDestination }     from './destination'

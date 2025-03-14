@@ -1,4 +1,4 @@
-import appDir         from '@itrocks/app-dir'
+import { appDir }     from '@itrocks/app-dir'
 import { jsonRoutes } from './json'
 import { Routes }     from './routes'
 
