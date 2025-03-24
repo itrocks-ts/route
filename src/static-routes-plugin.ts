@@ -1,6 +1,6 @@
 import { appDir }        from '@itrocks/app-dir'
-import { readFileSync }  from 'fs'
-import { writeFileSync } from 'fs'
+import { readFileSync }  from 'node:fs'
+import { writeFileSync } from 'node:fs'
 import ts                from 'typescript'
 
 // TODO support aliasing: import { Route as Alias } from './route' ; @Alias('/')

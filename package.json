@@ -52,5 +52,5 @@
 		"build:cjs": "tsc -p tsconfig.cjs.json",
 		"build:esm": "tsc -p tsconfig.esm.json && node esm/esm"
 	},
-	"version": "0.0.10"
+	"version": "0.0.11"
 }

@@ -14,7 +14,6 @@ const depends: Dependencies = {
 
 const ROUTE = Symbol('route')
 
-export default Route
 export function Route(route: string)
 {
 	return decorate(ROUTE, route)
