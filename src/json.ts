@@ -12,7 +12,12 @@ export async function jsonRoutes(path = appDir, fileName = 'routes.json', recurs
 		const filePath = join(path, entry.name)
 		if (entry.isDirectory()) {
 			if (recursive) {
-				Object.assign(routes, await jsonRoutes(filePath, fileName))
+				for (const [route, destination] of Object.entries(await jsonRoutes(filePath, fileName))) {
+					if ((route in routes) && (destination.startsWith('@itrocks/') && !routes[route].startsWith('@itrocks/'))) {
+						continue
+					}
+					routes[route] = destination
+				}
 			}
 		}
 		else if (entry.isFile() && (entry.name === fileName)) {
