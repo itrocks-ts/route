@@ -13,7 +13,7 @@ export async function jsonRoutes(path = appDir, fileName = 'routes.json', recurs
 		if (entry.isDirectory()) {
 			if (recursive) {
 				for (const [route, destination] of Object.entries(await jsonRoutes(filePath, fileName))) {
-					if ((route in routes) && (destination.startsWith('@itrocks/') && !routes[route].startsWith('@itrocks/'))) {
+					if ((route in routes) && (destination.includes('@itrocks/') && !routes[route].includes('@itrocks/'))) {
 						continue
 					}
 					routes[route] = destination
