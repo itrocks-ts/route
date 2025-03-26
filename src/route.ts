@@ -1,6 +1,4 @@
-import { appDir }     from '@itrocks/app-dir'
-import { jsonRoutes } from './json'
-import { Routes }     from './routes'
+import { Routes } from './routes'
 
 export {
 	Route,
@@ -15,18 +13,15 @@ export {
 } from './destination'
 
 export {
-	jsonRoutes
-} from './json'
-
-export {
 	RouteTree,
 	Routes
 } from './routes'
 
-export async function loadRoutes(path = appDir, fileName = 'routes.json', recursive = true)
+export const routes = new Routes()
+
+export async function loadRoutes(routes: Routes, config: Record<string, string>)
 {
-	const routes = new Routes()
-	for (const [route, destination] of Object.entries(await jsonRoutes(path, fileName, recursive))) {
+	for (const [route, destination] of Object.entries(config)) {
 		routes.add(route, destination)
 	}
 	routes.simplify()
