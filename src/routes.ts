@@ -17,10 +17,7 @@ export class Routes
 		const length = names.length - 1
 		for (let index = 0; index < length; index ++) {
 			const name = names[index]
-			let   step = route[name]
-			if (!step) {
-				step = {}
-			}
+			let   step = route[name] ?? {}
 			if (isDestination(step)) {
 				step = { '.': step }
 			}
