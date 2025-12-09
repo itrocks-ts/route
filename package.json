@@ -10,8 +10,8 @@
 	},
 	"description": "Domain-driven route manager with automatic generation, decorators, and static routes",
 	"devDependencies": {
-		"@types/node": "^22.10",
-		"typescript": "~5.8"
+		"@types/node": "^24.10",
+		"typescript": "~5.9"
 	},
 	"engines": {
 		"node": ">=18"
@@ -52,5 +52,5 @@
 		"build:cjs": "tsc -p tsconfig.cjs.json",
 		"build:esm": "tsc -p tsconfig.esm.json && node esm/esm"
 	},
-	"version": "0.0.18"
+	"version": "0.0.19"
 }
