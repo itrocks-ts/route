@@ -11,6 +11,10 @@ export function isDestination(destination: any): destination is Destination
 
 export function resolveDestination(destination: Destination): Function | Type | undefined
 {
+	let rightPart: string
+	[destination, rightPart] = destination.split(':')
+	const exportName = rightPart ?? 'default'
 	const module = require((destination[0] === '/') ? (appDir + destination) : destination)
-	return module.default ?? Object.values(module).find(destination => isAnyFunctionOrType(destination))
+	return module[exportName]
+		?? (!rightPart && Object.values(module).find(destination => isAnyFunctionOrType(destination)))
 }
