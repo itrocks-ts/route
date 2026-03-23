@@ -1,5 +1,8 @@
+import { isType }             from '@itrocks/class-type'
 import { Type }               from '@itrocks/class-type'
 import { sep }                from 'path'
+import { Route }              from './decorator'
+import { routeOf }            from './decorator'
 import { Destination }        from './destination'
 import { isDestination }      from './destination'
 import { resolveDestination } from './destination'
@@ -58,7 +61,11 @@ export class Routes
 		if (!destination) {
 			return undefined
 		}
-		return resolveDestination(destination)
+		const resolved = resolveDestination(destination)
+		if (resolved && isType(resolved) && (routeOf(resolved) !== route)) {
+			Route(route)(resolved)
+		}
+		return resolved
 	}
 
 	simplify()
