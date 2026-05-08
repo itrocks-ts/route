@@ -11,29 +11,28 @@
 	"description": "Domain-driven route manager with automatic generation, decorators, and static routes",
 	"devDependencies": {
 		"@types/node": "^24.10",
-		"typescript": "~5.9"
+		"typescript": "^6.0"
 	},
 	"engines": {
-		"node": ">=18"
+		"node": ">=24"
 	},
 	"exports": {
 		".": {
 			"import": "./esm/route.js",
-			"require": "./cjs/route.js",
-			"types": "./esm/route.d.ts"
+			"require": "./cjs/route.js"
 		},
 		"./static-routes-plugin": {
 			"import": "./esm/static-routes-plugin.js",
-			"require": "./cjs/static-routes-plugin.js",
-			"types": "./esm/static-routes-plugin.d.ts"
+			"require": "./cjs/static-routes-plugin.js"
 		}
 	},
 	"files": [
 		"LICENSE",
 		"README.md",
-		"*/*.d.ts",
-		"*/*.js",
-		"!*/esm.*"
+		"cjs",
+		"esm",
+		"!esm.*",
+		"!*.map"
 	],
 	"homepage": "https://it.rocks",
 	"keywords": [
@@ -53,5 +52,5 @@
 		"build:cjs": "tsc -p tsconfig.cjs.json",
 		"build:esm": "tsc -p tsconfig.esm.json && node esm/esm"
 	},
-	"version": "0.1.1"
+	"version": "0.1.2"
 }

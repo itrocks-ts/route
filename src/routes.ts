@@ -1,6 +1,6 @@
 import { isType }             from '@itrocks/class-type'
 import { Type }               from '@itrocks/class-type'
-import { sep }                from 'path'
+import { sep }                from 'node:path'
 import { Route }              from './decorator'
 import { routeOf }            from './decorator'
 import { Destination }        from './destination'

@@ -1,8 +1,7 @@
 {
 	"compilerOptions": {
-		"module": "ES2022",
-		"moduleResolution": "Bundler",
-		"outDir": "./esm"
+		"module": "esnext",
+		"outDir": "esm"
 	},
 	"extends": "./tsconfig.json"
 }

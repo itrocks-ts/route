@@ -1,5 +1,8 @@
-import { readdir, readFile, stat, writeFile } from 'fs/promises'
-import { join } from 'path'
+import { readdir }   from 'node:fs/promises'
+import { readFile }  from 'node:fs/promises'
+import { stat }      from 'node:fs/promises'
+import { writeFile } from 'node:fs/promises'
+import { join }      from 'node:path'
 
 async function addJsExtensions(dir: string)
 {

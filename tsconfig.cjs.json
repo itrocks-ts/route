@@ -1,7 +1,8 @@
 {
 	"compilerOptions": {
-		"outDir": "./cjs"
+		"module": "nodenext",
+		"outDir": "cjs"
 	},
-	"exclude": ["./src/esm.ts"],
+	"exclude": ["src/esm.ts"],
 	"extends": "./tsconfig.json"
 }
